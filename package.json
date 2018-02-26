@@ -1,0 +1,23 @@
+{
+  "name": "8bitbento-website-v1",
+  "version": "0.0.1",
+  "description": "8bitbento website v1",
+  "main": "index.html",
+  "repository": "https://github.com/benjaminapetersen/website-v1",
+  "scripts": {
+    "serve": "python -m SimpleHTTPServer",
+    "sass": "node-sass --watch ./assets/scss -o ./assets/css"
+  },
+  "contributors": [
+    {
+      "name": "benjaminapetersen",
+      "email": "ben@benjaminapetersen.me",
+      "url": "http://benjaminapetersen.me"
+    }
+  ],
+  "dependencies": {
+    "node-sass": "^4.7.2",
+    "purecss": "^1.0.0",
+    "zepto": "^1.2.0"
+  }
+}
