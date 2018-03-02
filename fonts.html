@@ -61,6 +61,9 @@
       .bold {
         font-weight: bold;
       }
+      .light {
+        font-weight: lighter;
+      }
       /*
         https://color.adobe.com for themes.
         swap a value here to change site + text logos generated
@@ -100,6 +103,10 @@
       }
 
     </style>
+
+    <!-- the winner so far, just hacking in the whole set for kicks.... -->
+    <link href="https://fonts.googleapis.com/css?family=Comfortaa:300,400,700" rel="stylesheet">
+
   </head>
   <body>
     <!-- Pure https://purecss.io/layouts/blog/ -->
@@ -115,14 +122,23 @@
         <div class="content pure-u-1 pure-u-md-3-4" outline>
           <div class="pure-g" outline>
 
-            <div class="pure-u-1-2" outline>
+            <div class="pure-u-1-3" outline>
               <div id="color-blocks">
                 <div id="pallette">pallette</div>
               </div>
               <div id="font-injection">Font lists go here</div>
             </div>
-            <div class="pure-u-1-2" outline>
+            <div class="pure-u-1-3" outline>
+              <div id="color-blocks">
+                <div id="pallette2">pallette</div>
+              </div>
               <div id="font-injection-2">Font lists go here</div>
+            </div>
+            <div class="pure-u-1-3" outline>
+              <div id="color-blocks">
+                <div id="pallette3">pallette</div>
+              </div>
+              <div id="font-injection-3">Font lists go here</div>
             </div>
           </div>
         </div>
@@ -166,8 +182,11 @@
         const $head = $('head'),
               $fontInject1 = $('#font-injection'),
               $fontInject2 = $('#font-injection-2'),
+              $fontInject3 = $('#font-injection-3'),
               $colorBlocks = $('#color-blocks'),
-              $pallette = $('#pallette')
+              $pallette = $('#pallette'),
+              $pallette2 = $('#pallette2'),
+              $pallette3 = $('#pallette3');
 
         // TODO: enable multiple. perhaps a column for each pallette, max 4?
         const colorSet = config.colorSets[0];
@@ -184,6 +203,7 @@
                   .toLowerCase();
         }
 
+
         // generate a list of styles for the font families
         let styles = families.map((family) => {
           return (`
@@ -193,7 +213,14 @@
           `);
         }).join('');
 
-        // inject the nodes for each font
+        // generated classes from the font list
+        $head.append(`<style>${styles}</style>`);
+        // Inject the google font url to the page.
+        $head.append(`<link href="${fontUrl}" rel="stylesheet">`);
+
+
+
+        // Column 1
         let nodes = families.map((family) => {
           // TODO: pass in the text, not hard-coded
           return (`
@@ -202,30 +229,63 @@
                 <span
                   class="eight"
                   style="color: ${colorSet.colors[0]}">8</span><span
-                  class="bit bold"
+                  class="bit"
                   style="color: ${colorSet.colors[0]}">bit</span><span
                   class="bento"
                   style="color: ${colorSet.colors[1]}">bento</span>
               </div>
               <div class="family">${family}</div>
             </div>
-
             `);
         });
-
-
-        // TODO: randomize colors & fonts?
-
-        // Inject the google font url to the page.
-        $head.append(`<link href="${fontUrl}" rel="stylesheet">`);
-        // generated classes from the font list
-        $head.append(`<style>${styles}</style>`);
-
-        // inject the DOM nodes withe the classes
         $fontInject1.empty().append(nodes);
-        $fontInject2.empty();
 
-        // do the color boxes at the top
+        // Column 2
+        let nodes2 = families.map((family) => {
+          // TODO: pass in the text, not hard-coded
+          return (`
+            <div class="font ${makeClass(family)}">
+              <div>
+                <span
+                  class="eight"
+                  style="color: ${colorSet.colors[0]}">8</span><span
+                  class="bit"
+                  style="color: ${colorSet.colors[0]}">bit</span><span
+                  class="bento bold"
+                  style="color: ${colorSet.colors[1]}">bento</span>
+              </div>
+              <div class="family">${family}</div>
+            </div>
+            `);
+        });
+        $fontInject2.empty().append(nodes2);
+
+
+        // Column 3
+        let nodes3 = families.map((family) => {
+          // TODO: pass in the text, not hard-coded
+          return (`
+            <div class="font ${makeClass(family)}">
+              <div>
+                <span
+                  class="eight"
+                  style="color: ${colorSet.colors[0]}">8</span><span
+                  class="bit"
+                  style="color: ${colorSet.colors[0]}">bit</span><span
+                  class="bento light"
+                  style="color: ${colorSet.colors[1]}">bento</span>
+              </div>
+              <div class="family">${family}</div>
+            </div>
+            `);
+        });
+        $fontInject3.empty().append(nodes3);
+
+
+
+
+        // TOP of COLUMNN
+        // color pallette name & chips
         let $colorNodes = colorSet.colors.map((hex) => {
           return (
             `<span class="color-chip" style="background-color: ${hex}"></span>`
@@ -235,10 +295,12 @@
                         .append($colorNodes);
         let $colorPalletteNode = $('<div class="font">')
                                     .append($chips)
-                                    .append(`<div class="family">${colorSet.name}</div>`)
+                                    .append(`<div class="family">${colorSet.name}</div>`);
 
-
+        // top of both columns cuz why not...
         $pallette.empty().append($colorPalletteNode);
+        $pallette2.empty().append($colorPalletteNode.clone());
+        $pallette3.empty().append($colorPalletteNode.clone());
 
       });
 
