@@ -30,6 +30,10 @@
         top: 0;
         bottom: 0;
       }
+      .brand-title {}
+      .brand-tagline {
+        text-align: left;
+      }
       .content {
         margin-left: 25%;
       }
@@ -40,13 +44,22 @@
       .l-box {
         padding: 1em;
       }
+
       .font {
         margin: 10px;
         padding: 10px;
-        font-size: 36px;
+        font-size: 32px;
       }
+      .family {
+        font-size: 12px;
+        color: #b2b2b2;
+      }
+
       .text-white {
         color: #fff;
+      }
+      .bold {
+        font-weight: bold;
       }
       /*
         https://color.adobe.com for themes.
@@ -54,28 +67,36 @@
       */
       .text-primary,
       .eight {
-        color: #1C3651
+
       }
       .text-secondary,
       .bit {
-        color: #CA3F5C;
+
       }
       .text-tertiary,
       .bento {
-        color: #EACBBD;
+
       }
       /* bgs with same vals. this should be done in SASS... */
       .bg-primary {
-        background: #1C3651
+        background: #021828
       }
       .bg-secondary {
-        background: #CA3F5C;
+        background: #031D2D;
       }
       .bg-tertiary {
-        background: #EACBBD;
+        background: #062735;
       }
       .bg-quaternary {
-        background: #5C5F73;
+        background: #F1F3F4;
+      }
+
+      .color-chip {
+        margin: 4px;
+        padding: 4px;
+        width: 15px;
+        height: 15px;
+        display: inline-block;
       }
 
     </style>
@@ -83,17 +104,21 @@
   <body>
     <!-- Pure https://purecss.io/layouts/blog/ -->
     <div id="layout" class="pure-g" outline>
-      <div class="sidebar pure-u-1 pure-u-md-1-4 bg-quaternary text-white" outline>
+      <div class="sidebar pure-u-1 pure-u-md-1-4 bg-primary text-white" outline>
         <div class="header">
           <h1 class="brand-title">
             <span class="eight">8</span><span class="bit">bit</span><span class="bento">bento</span>
           </h1>
-          <h2 class="brand-tagline">font comparisons for logo generation</h2>
+          <h2 class="brand-tagline">Google Font comparisons experiment</h2>
         </div>
       </div>
         <div class="content pure-u-1 pure-u-md-3-4" outline>
           <div class="pure-g" outline>
+
             <div class="pure-u-1-2" outline>
+              <div id="color-blocks">
+                <div id="pallette">pallette</div>
+              </div>
               <div id="font-injection">Font lists go here</div>
             </div>
             <div class="pure-u-1-2" outline>
@@ -106,16 +131,46 @@
 
     <script>
       $(() => {
+
+        // EDIT THIS
+        const config = {
+          fontUrl: 'https://fonts.googleapis.com/css?family=Comfortaa|Cabin|Didact+Gothic|Hind+Siliguri|Maven+Pro|Montserrat|Muli|Nanum+Gothic|Poiret+One|Quattrocento+Sans|Questrial|Quicksand|Raleway|Ubuntu',
+          // color.adobe.com for many professionally curated color pallettes
+          // currently primary, secondary, tertiary used
+          colorSets: [
+            //{ name: 'Цветовая тема 5', colors: ['#1C3651','#CA3F5C','#EACBBD','#5C5F73'] },
+            {
+              name: 'Resseguie Palette',
+              colors: [
+                '#D54159',
+                '#021828',
+                '#062735',
+                '#031D2D',
+                '#F1F3F4',
+              ]
+            }
+          ]
+        }
+
+        // EDIT NOTHING BELOW THIS LINE
+        // (unless hacking functionality)
+        ////////////////////////////////
+
         // just update this with the font url you get from https://fonts.google.com.
         // don't put the whole <link> tag, just the url.
-        const fontUrl = 'https://fonts.googleapis.com/css?family=Cabin|Comfortaa|Didact+Gothic|Hind+Siliguri|Maven+Pro|Montserrat|Muli|Nanum+Gothic|Poiret+One|Quattrocento+Sans|Questrial|Quicksand|Raleway|Ubuntu',
+        const fontUrl = config.fontUrl,
               urlParts = fontUrl.split('='),
               families = urlParts[1].split('|');
 
         // cache some DOM nodes
         const $head = $('head'),
               $fontInject1 = $('#font-injection'),
-              $fontInject2 = $('#font-injection-2');
+              $fontInject2 = $('#font-injection-2'),
+              $colorBlocks = $('#color-blocks'),
+              $pallette = $('#pallette')
+
+        // TODO: enable multiple. perhaps a column for each pallette, max 4?
+        const colorSet = config.colorSets[0];
 
 
         // convert a font family name into a class
@@ -140,13 +195,26 @@
 
         // inject the nodes for each font
         let nodes = families.map((family) => {
-          return (
-            `<div class="font ${makeClass(family)}">
-              <span class="eight">8</span><span class="bit">bit</span><span class="bento">bento</span>
-            </div>`);
+          // TODO: pass in the text, not hard-coded
+          return (`
+            <div class="font ${makeClass(family)}">
+              <div>
+                <span
+                  class="eight"
+                  style="color: ${colorSet.colors[0]}">8</span><span
+                  class="bit bold"
+                  style="color: ${colorSet.colors[0]}">bit</span><span
+                  class="bento"
+                  style="color: ${colorSet.colors[1]}">bento</span>
+              </div>
+              <div class="family">${family}</div>
+            </div>
+
+            `);
         });
 
-        // now, randomize a mix of fonts, just for fun...
+
+        // TODO: randomize colors & fonts?
 
         // Inject the google font url to the page.
         $head.append(`<link href="${fontUrl}" rel="stylesheet">`);
@@ -156,6 +224,21 @@
         // inject the DOM nodes withe the classes
         $fontInject1.empty().append(nodes);
         $fontInject2.empty();
+
+        // do the color boxes at the top
+        let $colorNodes = colorSet.colors.map((hex) => {
+          return (
+            `<span class="color-chip" style="background-color: ${hex}"></span>`
+          );
+        });
+        let $chips = $(`<div class="chips">`)
+                        .append($colorNodes);
+        let $colorPalletteNode = $('<div class="font">')
+                                    .append($chips)
+                                    .append(`<div class="family">${colorSet.name}</div>`)
+
+
+        $pallette.empty().append($colorPalletteNode);
 
       });
 
